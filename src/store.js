@@ -1,4 +1,6 @@
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import axios from 'axios';
+import thunk from 'redux-thunk';
 
 const ADD_PERSON = 'ADD_PERSON';
 const SET_PEOPLE = 'SET_PEOPLE';
@@ -23,12 +25,32 @@ const reducer = combineReducers({
     people: peopleReducer
 });
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(thunk));
 
-const addRandomPerson = ()=> {
-    const person = { id: Math.random(), name: `Person ${Math.random()}`};
-    store.dispatch({ type: ADD_PERSON, person });
+const setPeople = (people)=> {
+    return {
+        type: SET_PEOPLE,
+        people
+    }
+}
+
+const addRandomPerson = (person)=> {
+    return { type: ADD_PERSON, person }
+};
+
+const fetchPeople = ()=> {
+    return async(dispatch)=> {
+        const people = (await axios.get('/api/people')).data;
+        dispatch(setPeople(people));
+    };
+};
+
+const addRandomPersonFromServer = ()=> {
+    return async(dispatch)=> {
+        const person = (await axios.post('/api/people')).data;
+        dispatch(addRandomPerson(person));
+    };
 };
 
 export default store;
-export { addRandomPerson };
+export { addRandomPerson, addRandomPersonFromServer, setPeople, fetchPeople };

@@ -1,57 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 import { Provider, connect } from 'react-redux';
 import { HashRouter, Link, Route } from 'react-router-dom';
+
 import Nav from './Nav';
 import Home from './Home';
 import People from './People';
-import store from './store';
 
-
-
-
-// setTimeout(() => {
-//     store.dispatch({type: 'SET_PEOPLE', people: [{ id: 1, name: 'moe'}]});            
-// }, 1000);
-
-// High Order Component
-// const connect = (Component)=> {
-//     return class Connected extends React.Component{
-//         constructor(){
-//             super();
-//             this.state = store.getState();
-//         }
-//         componentWillUnmount(){
-//             this.unsubscribe();
-//         }
-//         componentDidMount(){
-//             this.unsubscribe = store.subscribe(()=> this.setState(store.getState()));
-//         }
-//         render(){
-//             return <Component {...this.state } {...this.props } />; 
-//         }
-//     }
-// };
-
-
-
-
-
-
-
-// const Nav = connect(_Nav);
-// const Home = connect(_Home);
-// const People = connect(_People);
-
-
-
-
-
-
+import store, { fetchPeople } from './store';
 
 
 
 class App extends React.Component{
+    async componentDidMount(){
+        store.dispatch(fetchPeople());
+    }
     render(){
         return (
             <Provider store={ store }>

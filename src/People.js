@@ -1,16 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addRandomPerson } from './store';
+import { addRandomPersonFromServer } from './store';
 
-const _People = ({ people })=> <div>
+const _People = ({ people, addRandomPerson })=> <div>
     People - there are { people.length }
     <button onClick={ addRandomPerson }>Add Random Person</button>
 </div>;
 
-const People = connect(({ people})=> {
+const mapStateToProps = ({ people })=> ({ people });
+
+const mapDispatchToProps = (dispatch) => {
     return {
-        people
-    }
-})(_People);
+        addRandomPerson: ()=> {
+            dispatch(addRandomPersonFromServer());
+        }
+    };
+};
+
+const People = connect(mapStateToProps, mapDispatchToProps)(_People);
 
 export default People;
